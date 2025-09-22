@@ -76,6 +76,8 @@ class Application(object):
     def __init__(self):
         # 初始化唤醒按键
         self.gpio19 =Pin(Pin.GPIO19, Pin.OUT, Pin.PULL_DISABLE, 1)
+        self.upsetvolume = ExtInt(ExtInt.GPIO47, ExtInt.IRQ_FALLING , ExtInt.PULL_PU, self.setvolumeup, 50)
+        self.downsetvolume = ExtInt(ExtInt.GPIO20, ExtInt.IRQ_FALLING , ExtInt.PULL_PU, self.setvolumedown, 50)     
         self.talk_key = ExtInt(ExtInt.GPIO19, ExtInt.IRQ_RISING_FALLING, ExtInt.PULL_PU, self.on_talk_key_click, 50)
         
         # 初始化 led; write(1) 灭； write(0) 亮
@@ -113,6 +115,14 @@ class Application(object):
         self.__record_thread_stop_event = Event()
         self.__voice_activity_event = Event()
         self.__keyword_spotting_event = Event()
+        
+    def setvolumedown(self,args):
+        print("setvolumedown")
+        return self.audio_manager.setvolume_down()
+    
+    def setvolumeup(self,args):
+        print("setvolumeup")
+        return self.audio_manager.setvolume_up()
 
     def __record_thread_handler(self):
         """纯粹是为了kws&vad能识别才起的线程持续读音频"""
@@ -279,6 +289,8 @@ class Application(object):
         self.charge_manager.enable_charge()
         self.audio_manager.open_opus()
         self.talk_key.enable()
+        self.upsetvolume.enable()
+        self.downsetvolume.enable()
         self.led_power_pin.write(1)
         self.power_red_led.blink(250, 250)
 
