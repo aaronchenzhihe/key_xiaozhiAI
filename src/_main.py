@@ -205,9 +205,11 @@ class Application(object):
         logger.info("on_talk_key_click: ", args)
         if args[1] == 0:
             # 按键按下
+            self.lte_green_led.on()
             self.__voice_activity_event.set()  # 有人声
         else:
             # 按键抬起
+            self.lte_green_led.off()
             self.__voice_activity_event.clear()  # 无人声
         if self.__working_thread is not None and self.__working_thread.is_running():
             return

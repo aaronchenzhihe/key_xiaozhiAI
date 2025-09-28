@@ -90,9 +90,9 @@ class AudioManager(object):
             
     def set_vad_cb(self, cb):
         def wrapper(state):
-            if self.__skip != 2:
-                self.__skip += 1
-                return
+            # if self.__skip != 2:
+            #     self.__skip += 1
+            #     return
             return cb(state)
         self._callable = wrapper
         self.rec.vad_set_callback(self._callable)
@@ -109,7 +109,8 @@ class AudioManager(object):
             pass
     
     def start_kws(self):
-        self.rec.ovkws_start("_xiao_zhi_xiao_zhi", 0.7)
+        list=["_xiao_zhi_xiao_zhi","_xiao_tian_xiao_tian","_xiao_zi_xiao_zi","_xiao_shi_xiao_shi","_xiao_si_xiao_si","_xiao_zhi_xiao_zi","_xiao_zi_xiao_zhi"]
+        self.rec.ovkws_start(list, 0.7)
 
     def stop_kws(self):
         self.rec.ovkws_stop()
